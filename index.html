@@ -1,0 +1,2152 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR Attendance System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #4A73FF;
+            --primary-dark: #3558d9;
+            --secondary: #667eea;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1e293b;
+            --light: #f5f7fa;
+            --white: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+            --sidebar-width: 260px;
+            --header-height: 70px;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--light);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* ==================== LOGIN PAGE ==================== */
+        .login-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 50px 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 420px;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .login-header i {
+            font-size: 60px;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .login-header h1 {
+            font-size: 28px;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+
+        .login-header p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px 15px 14px 45px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background: var(--white);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(74, 115, 255, 0.1);
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(74, 115, 255, 0.3);
+        }
+
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        .remember-forgot a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .remember-forgot a:hover {
+            text-decoration: underline;
+        }
+
+        /* ==================== DASHBOARD LAYOUT ==================== */
+        .dashboard-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            overflow-y: auto;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 25px 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-header h2 {
+            color: var(--white);
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .sidebar-header i {
+            color: var(--primary);
+        }
+
+        .sidebar-menu {
+            padding: 20px 0;
+        }
+
+        .menu-item {
+            padding: 14px 25px;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+            font-size: 15px;
+            border-left: 3px solid transparent;
+        }
+
+        .menu-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--white);
+            border-left-color: var(--primary);
+        }
+
+        .menu-item.active {
+            background: rgba(74, 115, 255, 0.15);
+            color: var(--white);
+            border-left-color: var(--primary);
+        }
+
+        .menu-item i {
+            font-size: 18px;
+            width: 20px;
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            transition: all 0.3s ease;
+        }
+
+        .header {
+            background: var(--white);
+            height: var(--header-height);
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+
+        .header-left h1 {
+            font-size: 24px;
+            color: var(--text-primary);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .notification-icon {
+            position: relative;
+            cursor: pointer;
+            font-size: 20px;
+            color: var(--text-secondary);
+            transition: color 0.3s ease;
+        }
+
+        .notification-icon:hover {
+            color: var(--primary);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--danger);
+            color: var(--white);
+            font-size: 10px;
+            padding: 2px 5px;
+            border-radius: 10px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 10px;
+            transition: background 0.3s ease;
+        }
+
+        .user-profile:hover {
+            background: var(--light);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: 600;
+        }
+
+        .user-info h4 {
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+
+        .user-info p {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .content-area {
+            padding: 30px;
+        }
+
+        /* ==================== STATS CARDS ==================== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .stat-card:hover::before {
+            width: 8px;
+        }
+
+        .stat-card.success::before { background: var(--success); }
+        .stat-card.warning::before { background: var(--warning); }
+        .stat-card.danger::before { background: var(--danger); }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: var(--white);
+        }
+
+        .stat-icon.primary { background: var(--primary); }
+        .stat-icon.success { background: var(--success); }
+        .stat-icon.warning { background: var(--warning); }
+        .stat-icon.danger { background: var(--danger); }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* ==================== CHARTS SECTION ==================== */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .chart-card {
+            background: var(--white);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .chart-header h3 {
+            font-size: 18px;
+            color: var(--text-primary);
+        }
+
+        .chart-placeholder {
+            height: 300px;
+            background: linear-gradient(135deg, rgba(74, 115, 255, 0.05) 0%, rgba(102, 126, 234, 0.05) 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* ==================== TABLES ==================== */
+        .table-card {
+            background: var(--white);
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 20px 25px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-header h3 {
+            font-size: 18px;
+            color: var(--text-primary);
+        }
+
+        .search-box {
+            position: relative;
+            width: 250px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: var(--light);
+        }
+
+        th {
+            padding: 15px 20px;
+            text-align: left;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+
+        tbody tr {
+            transition: background 0.3s ease;
+        }
+
+        tbody tr:hover {
+            background: rgba(74, 115, 255, 0.03);
+        }
+
+        .badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .badge-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .badge-warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .badge-danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .badge-primary {
+            background: rgba(74, 115, 255, 0.1);
+            color: var(--primary);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .btn-edit {
+            background: rgba(74, 115, 255, 0.1);
+            color: var(--primary);
+        }
+
+        .btn-edit:hover {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .btn-delete {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .btn-delete:hover {
+            background: var(--danger);
+            color: var(--white);
+        }
+
+        .btn-view {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .btn-view:hover {
+            background: var(--success);
+            color: var(--white);
+        }
+
+        /* ==================== MODAL ==================== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: var(--white);
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 25px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-size: 20px;
+            color: var(--text-primary);
+        }
+
+        .close-modal {
+            width: 35px;
+            height: 35px;
+            border-radius: 8px;
+            border: none;
+            background: var(--light);
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .close-modal:hover {
+            background: var(--danger);
+            color: var(--white);
+        }
+
+        .modal-body {
+            padding: 25px;
+        }
+
+        .modal-footer {
+            padding: 20px 25px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .btn-secondary {
+            background: var(--light);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+        }
+
+        /* ==================== FILTER PANEL ==================== */
+        .filter-panel {
+            background: var(--white);
+            padding: 20px 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 25px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .filter-group select,
+        .filter-group input[type="date"] {
+            width: 100%;
+            padding: 10px 15px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .filter-group select:focus,
+        .filter-group input[type="date"]:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* ==================== EMPLOYEE PROFILE CARD ==================== */
+        .employee-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .employee-card {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .employee-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .employee-avatar-large {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 36px;
+            font-weight: 600;
+            margin: 0 auto 20px;
+        }
+
+        .employee-card h4 {
+            font-size: 18px;
+            color: var(--text-primary);
+            margin-bottom: 5px;
+        }
+
+        .employee-card p {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .employee-stats {
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 0;
+            border-top: 1px solid var(--border);
+            margin-top: 15px;
+        }
+
+        .employee-stat-item {
+            text-align: center;
+        }
+
+        .employee-stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .employee-stat-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 3px;
+        }
+
+        /* ==================== RESPONSIVE ==================== */
+        @media (max-width: 1024px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .header {
+                padding: 0 15px;
+            }
+
+            .content-area {
+                padding: 15px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
+            .table-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .filter-panel {
+                flex-direction: column;
+            }
+
+            .filter-group {
+                width: 100%;
+            }
+        }
+
+        /* ==================== UTILITIES ==================== */
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        .mb-20 { margin-bottom: 20px; }
+        .mt-20 { margin-top: 20px; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<!-- ==================== LOGIN PAGE ==================== -->
+<div class="login-page" id="loginPage">
+    <div class="login-container">
+        <div class="login-header">
+            <i class="fas fa-user-shield"></i>
+            <h1>HR Attendance System</h1>
+            <p>Tizimga kirish uchun ma'lumotlaringizni kiriting</p>
+        </div>
+        <form>
+            <div class="form-group">
+                <label for="email">Email manzil</label>
+                <div class="input-group">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="email" class="form-control" placeholder="admin@company.com" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="password">Parol</label>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="password" class="form-control" placeholder="••••••••" required>
+                </div>
+            </div>
+            <div class="remember-forgot">
+                <label>
+                    <input type="checkbox"> Eslab qolish
+                </label>
+                <a href="#">Parolni unutdingizmi?</a>
+            </div>
+            <button type="button" class="btn btn-primary" onclick="goToDashboard()">
+                <i class="fas fa-sign-in-alt"></i>
+                Kirish
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- ==================== DASHBOARD PAGE ==================== -->
+<div class="dashboard-layout hidden" id="dashboardPage">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fas fa-briefcase"></i> HR System</h2>
+        </div>
+        <nav class="sidebar-menu">
+            <a href="#" class="menu-item active" onclick="showPage('dashboard')">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="menu-item" onclick="showPage('employees')">
+                <i class="fas fa-users"></i>
+                <span>Xodimlar</span>
+            </a>
+            <a href="#" class="menu-item" onclick="showPage('attendance')">
+                <i class="fas fa-calendar-check"></i>
+                <span>Davomat</span>
+            </a>
+            <a href="#" class="menu-item" onclick="showPage('shifts')">
+                <i class="fas fa-clock"></i>
+                <span>Smenalar</span>
+            </a>
+            <a href="#" class="menu-item" onclick="showPage('reports')">
+                <i class="fas fa-chart-line"></i>
+                <span>Hisobotlar</span>
+            </a>
+            <a href="#" class="menu-item" onclick="showPage('settings')">
+                <i class="fas fa-cog"></i>
+                <span>Sozlamalar</span>
+            </a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header class="header">
+            <div class="header-left">
+                <h1 id="pageTitle">Dashboard</h1>
+            </div>
+            <div class="header-right">
+                <div class="notification-icon">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                </div>
+                <div class="user-profile">
+                    <div class="user-avatar">AS</div>
+                    <div class="user-info">
+                        <h4>Admin Sobirov</h4>
+                        <p>Administrator</p>
+                    </div>
+                </div>
+                <button class="btn btn-icon btn-secondary" onclick="logout()" title="Chiqish">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- ==================== DASHBOARD CONTENT ==================== -->
+        <div class="content-area" id="dashboardContent">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div>
+                            <div class="stat-value">245</div>
+                            <div class="stat-label">Jami xodimlar</div>
+                        </div>
+                        <div class="stat-icon primary">
+                            <i class="fas fa-users"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card success">
+                    <div class="stat-header">
+                        <div>
+                            <div class="stat-value">218</div>
+                            <div class="stat-label">Vaqtida kelganlar</div>
+                        </div>
+                        <div class="stat-icon success">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card warning">
+                    <div class="stat-header">
+                        <div>
+                            <div class="stat-value">15</div>
+                            <div class="stat-label">Kechikkanlar</div>
+                        </div>
+                        <div class="stat-icon warning">
+                            <i class="fas fa-exclamation-circle"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card danger">
+                    <div class="stat-header">
+                        <div>
+                            <div class="stat-value">12</div>
+                            <div class="stat-label">Kelmagan</div>
+                        </div>
+                        <div class="stat-icon danger">
+                            <i class="fas fa-times-circle"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Haftalik davomat statistikasi</h3>
+                        <select style="padding: 8px 12px; border: 2px solid var(--border); border-radius: 8px;">
+                            <option>Bu hafta</option>
+                            <option>O'tgan hafta</option>
+                            <option>Bu oy</option>
+                        </select>
+                    </div>
+                    <div class="chart-placeholder">
+                        <i class="fas fa-chart-bar" style="font-size: 48px; color: var(--primary);"></i>
+                        <p style="margin-top: 15px;">Chart.js grafigi joylashuvi</p>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Bo'limlar bo'yicha</h3>
+                    </div>
+                    <div class="chart-placeholder">
+                        <i class="fas fa-chart-pie" style="font-size: 48px; color: var(--secondary);"></i>
+                        <p style="margin-top: 15px;">Pie chart joylashuvi</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-card">
+                <div class="table-header">
+                    <h3>Bugungi davomat</h3>
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Qidirish...">
+                    </div>
+                </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Xodim</th>
+                                <th>Bo'lim</th>
+                                <th>Kelish vaqti</th>
+                                <th>Chiqish vaqti</th>
+                                <th>Holat</th>
+                                <th>Amallar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>#0001</td>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <div class="user-avatar" style="width: 35px; height: 35px; font-size: 14px;">AN</div>
+                                        <span>Akmal Normatov</span>
+                                    </div>
+                                </td>
+                                <td>IT Department</td>
+                                <td>08:45</td>
+                                <td>18:00</td>
+                                <td><span class="badge badge-success">Vaqtida</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-icon btn-view"><i class="fas fa-eye"></i></button>
+                                        <button class="btn-icon btn-edit"><i class="fas fa-edit"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>#0002</td>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <div class="user-avatar" style="width: 35px; height: 35px; font-size: 14px;">DS</div>
+                                        <span>Dilshod Saidov</span>
+                                    </div>
+                                </td>
+                                <td>HR Department</td>
+                                <td>09:15</td>
+                                <td>18:30</td>
+                                <td><span class="badge badge-warning">Kechikkan (15 min)</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-icon btn-view"><i class="fas fa-eye"></i></button>
+                                        <button class="btn-icon btn-edit"><i class="fas fa-edit"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>#0003</td>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <div class="user-avatar" style="width: 35px; height: 35px; font-size: 14px;">MU</div>
+                                        <span>Malika Usmonova</span>
+                                    </div>
+                                </td>
+                                <td>Finance</td>
+                                <td>08:50</td>
+                                <td>17:55</td>
+                                <td><span class="badge badge-success">Vaqtida</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-icon btn-view"><i class="fas fa-eye"></i></button>
+                                        <button class="btn-icon btn-edit"><i class="fas fa-edit"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>#0004</td>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <div class="user-avatar" style="width: 35px; height: 35px; font-size: 14px;">JR</div>
+                                        <span>Jamshid Rahimov</span>
+                                    </div>
+                                </td>
+                                <td>Marketing</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td><span class="badge badge-danger">Kelmagan</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-icon btn-view"><i class="fas fa-eye"></i></button>
+                                        <button class="btn-icon btn-edit"><i class="fas fa-edit"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== EMPLOYEES PAGE ==================== -->
+        <div class="content-area hidden" id="employeesContent">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <h2>Xodimlar ro'yxati</h2>
+                <button class="btn btn-primary" onclick="openModal()">
+                    <i class="fas fa-plus"></i>
+                    Yangi xodim
+                </button>
+            </div>
+
+            <div class="employee-grid">
+                <div class="employee-card">
+                    <div class="employee-avatar-large">AN</div>
+                    <h4>Akmal Normatov</h4>
+                    <p>Senior Developer</p>
+                    <span class="badge badge-primary">IT Department</span>
+                    <div class="employee-stats">
+                        <div class="employee-stat-item">
+                            <div class="employee-stat-value">98%</div>
+                            <div class="employee-stat-label">Davomat</div>
+                        </div>
+                        <div class="employee-stat-item">
+                            <div class="employee-stat-value">3</div>
+                            <div class="employee-stat-label">Kechikishlar</div>
+                        </div>
+                    </div>
+                    <div class="action-buttons mt-20" style="justify-content: center;">
+                        <button class="btn-icon btn-view"><i class="fas fa-eye"></i></button>
+                        <button class="btn-icon btn-edit"><i class="fas fa-edit"></i></button>
+                        <button class="btn-icon btn-delete"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+                <div class="employee-card">
+                    <div class="employee-avatar-large">DS</div>
+                    <h4>Dilshod Saidov</h4>
+                    <p>HR Manager</p>
+                    <span class="badge badge-success">HR Department</span>
+                    <div class="employee-stats">
+                        <div class="employee-stat-item">
+                            <div class="employee-stat-value">95%</div>
+                            <div class="employee-stat-label">Davomat</div>
+                        </div>
+                        <div class="employee-stat-item">
+                            <div class="employee-stat-value">5</div>
+                            <div class="employee-stat-label">Kechikishlar</div>
+                        </div>
+                    </div>
+                    <div class="action-buttons mt-20" style="justify-content: center;">
+                        <button class="btn-icon btn-view"><i class="fas fa-eye"></i></button>
+                        <button class="btn-icon btn-edit"><i class="fas fa-edit"></i></button>
+                        <button class="btn-icon btn-delete"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+                <div class="employee-card">
+                    <div class="employee-avatar-large">MU</div>
+                    <h4>Malika Usmonova</h4>
+                    <p>Accountant</p>
+                    <span class="badge badge-warning">Finance</span>
+                    <div class="employee-stats">
+                        <div class="employee-stat-item">
+                            <div class="employee-stat-value">99%</div>
+                            <div class="employee-stat-label">Davomat</div>
+                        </div>
+                        <div class="employee-stat-item">
+                            <div class="employee-stat-value">1</div>
+                            <div class="employee-stat-label">Kechikishlar</div>
+                        </div>
+                    </div>
+                    <div class="action-buttons mt-20" style="justify-content: center;">
+                        <button class="btn-icon btn-view"><i class="fas fa-eye"></i></button>
+                        <button class="btn-icon btn-edit"><i class="fas fa-edit"></i></button>
+                        <button class="btn-icon btn-delete"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-card mt-20">
+                <div class="table-header">
+                    <h3>Barcha xodimlar</h3>
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Qidirish...">
+                    </div>
+                </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>F.I.O</th>
+                                <th>Lavozim</th>
+                                <th>Bo'lim</th>
+                                <th>Telefon</th>
+                                <th>Email</th>
+                                <th>Holat</th>
+                                <th>Amallar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>#0001</td>
+                                <td>Akmal Normatov</td>
+                                <td>Senior Developer</td>
+                                <td>IT Department</td>
+                                <td>+998 90 123 45 67</td>
+                                <td>akmal@company.uz</td>
+                                <td><span class="badge badge-success">Faol</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-icon btn-view"><i class="fas fa-eye"></i></button>
+                                        <button class="btn-icon btn-edit"><i class="fas fa-edit"></i></button>
+                                        <button class="btn-icon btn-delete"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>#0002</td>
+                                <td>Dilshod Saidov</td>
+                                <td>HR Manager</td>
+                                <td>HR Department</td>
+                                <td>+998 91 234 56 78</td>
+                                <td>dilshod@company.uz</td>
+                                <td><span class="badge badge-success">Faol</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-icon btn-view"><i class="fas fa-eye"></i></button>
+                                        <button class="btn-icon btn-edit"><i class="fas fa-edit"></i></button>
+                                        <button class="btn-icon btn-delete"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== ATTENDANCE PAGE ==================== -->
+        <div class="content-area hidden" id="attendanceContent">
+            <h2 class="mb-20">Davomat nazorati</h2>
+            
+            <div class="filter-panel">
+                <div class="filter-group">
+                    <label>Boshlanish sanasi</label>
+                    <input type="date" value="2024-12-01">
+                </div>
+                <div class="filter-group">
+                    <label>Tugash sanasi</label>
+                    <input type="date" value="2024-12-11">
+                </div>
+                <div class="filter-group">
+                    <label>Xodim</label>
+                    <select>
+                        <option>Barchasi</option>
+                        <option>Akmal Normatov</option>
+                        <option>Dilshod Saidov</option>
+                        <option>Malika Usmonova</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Bo'lim</label>
+                    <select>
+                        <option>Barchasi</option>
+                        <option>IT Department</option>
+                        <option>HR Department</option>
+                        <option>Finance</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" style="padding: 10px 20px;">
+                    <i class="fas fa-filter"></i>
+                    Filtrlash
+                </button>
+            </div>
+
+            <div class="table-card">
+                <div class="table-header">
+                    <h3>Davomat jadvali</h3>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-download"></i>
+                        Excel yuklash
+                    </button>
+                </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Sana</th>
+                                <th>Xodim</th>
+                                <th>Kelish</th>
+                                <th>Chiqish</th>
+                                <th>Jami soatlar</th>
+                                <th>Kechikish (min)</th>
+                                <th>Holat</th>
+                                <th>Amallar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2024-12-11</td>
+                                <td>Akmal Normatov</td>
+                                <td>08:45</td>
+                                <td>18:00</td>
+                                <td>9.25</td>
+                                <td>0</td>
+                                <td><span class="badge badge-success">Vaqtida</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-icon btn-view"><i class="fas fa-eye"></i></button>
+                                        <button class="btn-icon btn-edit"><i class="fas fa-edit"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2024-12-11</td>
+                                <td>Dilshod Saidov</td>
+                                <td>09:15</td>
+                                <td>18:30</td>
+                                <td>9.25</td>
+                                <td>15</td>
+                                <td><span class="badge badge-warning">Kechikkan</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-icon btn-view"><i class="fas fa-eye"></i></button>
+                                        <button class="btn-icon btn-edit"><i class="fas fa-edit"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2024-12-11</td>
+                                <td>Malika Usmonova</td>
+                                <td>08:50</td>
+                                <td>17:55</td>
+                                <td>9.08</td>
+                                <td>0</td>
+                                <td><span class="badge badge-success">Vaqtida</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-icon btn-view"><i class="fas fa-eye"></i></button>
+                                        <button class="btn-icon btn-edit"><i class="fas fa-edit"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2024-12-10</td>
+                                <td>Jamshid Rahimov</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>0</td>
+                                <td>-</td>
+                                <td><span class="badge badge-danger">Kelmagan</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-icon btn-view"><i class="fas fa-eye"></i></button>
+                                        <button class="btn-icon btn-edit"><i class="fas fa-edit"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== SHIFTS PAGE ==================== -->
+        <div class="content-area hidden" id="shiftsContent">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <h2>Ish smenalari</h2>
+                <button class="btn btn-primary" onclick="openShiftModal()">
+                    <i class="fas fa-plus"></i>
+                    Yangi smena
+                </button>
+            </div>
+
+            <div class="stats-grid mb-20">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div>
+                            <div class="stat-value">5</div>
+                            <div class="stat-label">Jami smenalar</div>
+                        </div>
+                        <div class="stat-icon primary">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card success">
+                    <div class="stat-header">
+                        <div>
+                            <div class="stat-value">4</div>
+                            <div class="stat-label">Faol smenalar</div>
+                        </div>
+                        <div class="stat-icon success">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card warning">
+                    <div class="stat-header">
+                        <div>
+                            <div class="stat-value">180</div>
+                            <div class="stat-label">Jami xodimlar</div>
+                        </div>
+                        <div class="stat-icon warning">
+                            <i class="fas fa-users"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-card">
+                <div class="table-header">
+                    <h3>Smenalar ro'yxati</h3>
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Qidirish...">
+                    </div>
+                </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Smena nomi</th>
+                                <th>Boshlanish</th>
+                                <th>Tugash</th>
+                                <th>Tanaffus</th>
+                                <th>Jami soatlar</th>
+                                <th>Xodimlar soni</th>
+                                <th>Holat</th>
+                                <th>Amallar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Standart kunduzgi</strong></td>
+                                <td>09:00</td>
+                                <td>18:00</td>
+                                <td>1 soat</td>
+                                <td>8 soat</td>
+                                <td>120</td>
+                                <td><span class="badge badge-success">Faol</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-icon btn-view"><i class="fas fa-eye"></i></button>
+                                        <button class="btn-icon btn-edit"><i class="fas fa-edit"></i></button>
+                                        <button class="btn-icon btn-delete"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Ertalabki</strong></td>
+                                <td>07:00</td>
+                                <td>16:00</td>
+                                <td>1 soat</td>
+                                <td>8 soat</td>
+                                <td>35</td>
+                                <td><span class="badge badge-success">Faol</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-icon btn-view"><i class="fas fa-eye"></i></button>
+                                        <button class="btn-icon btn-edit"><i class="fas fa-edit"></i></button>
+                                        <button class="btn-icon btn-delete"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Kechki</strong></td>
+                                <td>14:00</td>
+                                <td>22:00</td>
+                                <td>30 min</td>
+                                <td>7.5 soat</td>
+                                <td>25</td>
+                                <td><span class="badge badge-success">Faol</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-icon btn-view"><i class="fas fa-eye"></i></button>
+                                        <button class="btn-icon btn-edit"><i class="fas fa-edit"></i></button>
+                                        <button class="btn-icon btn-delete"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== REPORTS PAGE ==================== -->
+        <div class="content-area hidden" id="reportsContent">
+            <h2 class="mb-20">Hisobotlar</h2>
+
+            <div class="filter-panel">
+                <div class="filter-group">
+                    <label>Hisobot turi</label>
+                    <select>
+                        <option>Oylik davomat hisoboti</option>
+                        <option>Kechikishlar hisoboti</option>
+                        <option>Bo'limlar bo'yicha hisobot</option>
+                        <option>Xodimlar statistikasi</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Oy</label>
+                    <input type="month" value="2024-12">
+                </div>
+                <div class="filter-group">
+                    <label>Bo'lim</label>
+                    <select>
+                        <option>Barchasi</option>
+                        <option>IT Department</option>
+                        <option>HR Department</option>
+                        <option>Finance</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" style="padding: 10px 20px;">
+                    <i class="fas fa-chart-bar"></i>
+                    Hisobot yaratish
+                </button>
+                <button class="btn btn-secondary" style="padding: 10px 20px;">
+                    <i class="fas fa-download"></i>
+                    PDF yuklash
+                </button>
+            </div>
+
+            <div class="stats-grid mb-20">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div>
+                            <div class="stat-value">96.5%</div>
+                            <div class="stat-label">O'rtacha davomat</div>
+                        </div>
+                        <div class="stat-icon primary">
+                            <i class="fas fa-percentage"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card warning">
+                    <div class="stat-header">
+                        <div>
+                            <div class="stat-value">145</div>
+                            <div class="stat-label">Jami kechikishlar</div>
+                        </div>
+                        <div class="stat-icon warning">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card danger">
+                    <div class="stat-header">
+                        <div>
+                            <div class="stat-value">28</div>
+                            <div class="stat-label">Jami kelmaganlar</div>
+                        </div>
+                        <div class="stat-icon danger">
+                            <i class="fas fa-user-times"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card success">
+                    <div class="stat-header">
+                        <div>
+                            <div class="stat-value">4,580</div>
+                            <div class="stat-label">Jami ish soatlari</div>
+                        </div>
+                        <div class="stat-icon success">
+                            <i class="fas fa-hourglass-half"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-card">
+                <div class="table-header">
+                    <h3>Dekabr 2024 - Xodimlar davomat xisoboti</h3>
+                </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Xodim</th>
+                                <th>Bo'lim</th>
+                                <th>Ish kunlari</th>
+                                <th>Kelgan kunlar</th>
+                                <th>Kechikishlar</th>
+                                <th>Kelmaganlar</th>
+                                <th>Jami soatlar</th>
+                                <th>Davomat %</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Akmal Normatov</td>
+                                <td>IT Department</td>
+                                <td>22</td>
+                                <td>21</td>
+                                <td>2</td>
+                                <td>1</td>
+                                <td>168</td>
+                                <td><span class="badge badge-success">95.5%</span></td>
+                            </tr>
+                            <tr>
+                                <td>Dilshod Saidov</td>
+                                <td>HR Department</td>
+                                <td>22</td>
+                                <td>20</td>
+                                <td>5</td>
+                                <td>2</td>
+                                <td>160</td>
+                                <td><span class="badge badge-warning">90.9%</span></td>
+                            </tr>
+                            <tr>
+                                <td>Malika Usmonova</td>
+                                <td>Finance</td>
+                                <td>22</td>
+                                <td>22</td>
+                                <td>1</td>
+                                <td>0</td>
+                                <td>176</td>
+                                <td><span class="badge badge-success">100%</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- ==================== ADD EMPLOYEE MODAL ==================== -->
+<div class="modal" id="employeeModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Yangi xodim qo'shish</h3>
+            <button class="close-modal" onclick="closeModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form>
+                <div class="form-group">
+                    <label>To'liq ism</label>
+                    <div class="input-group">
+                        <i class="fas fa-user"></i>
+                        <input type="text" class="form-control" placeholder="Ism Familiya" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <div class="input-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" class="form-control" placeholder="email@company.uz" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Telefon</label>
+                    <div class="input-group">
+                        <i class="fas fa-phone"></i>
+                        <input type="tel" class="form-control" placeholder="+998 90 123 45 67" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Lavozim</label>
+                    <div class="input-group">
+                        <i class="fas fa-briefcase"></i>
+                        <input type="text" class="form-control" placeholder="Lavozim" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Bo'lim</label>
+                    <select class="form-control" style="padding-left: 45px;" required>
+                        <option value="">Tanlang...</option>
+                        <option>IT Department</option>
+                        <option>HR Department</option>
+                        <option>Finance</option>
+                        <option>Marketing</option>
+                        <option>Sales</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Smena</label>
+                    <select class="form-control" style="padding-left: 45px;" required>
+                        <option value="">Tanlang...</option>
+                        <option>Standart kunduzgi (09:00-18:00)</option>
+                        <option>Ertalabki (07:00-16:00)</option>
+                        <option>Kechki (14:00-22:00)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Ish boshlanish sanasi</label>
+                    <div class="input-group">
+                        <i class="fas fa-calendar"></i>
+                        <input type="date" class="form-control" required>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal()">Bekor qilish</button>
+            <button class="btn btn-primary">
+                <i class="fas fa-save"></i>
+                Saqlash
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== ADD SHIFT MODAL ==================== -->
+<div class="modal" id="shiftModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Yangi smena qo'shish</h3>
+            <button class="close-modal" onclick="closeShiftModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form>
+                <div class="form-group">
+                    <label>Smena nomi</label>
+                    <div class="input-group">
+                        <i class="fas fa-tag"></i>
+                        <input type="text" class="form-control" placeholder="Masalan: Standart kunduzgi" required>
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label>Boshlanish vaqti</label>
+                        <div class="input-group">
+                            <i class="fas fa-clock"></i>
+                            <input type="time" class="form-control" value="09:00" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Tugash vaqti</label>
+                        <div class="input-group">
+                            <i class="fas fa-clock"></i>
+                            <input type="time" class="form-control" value="18:00" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Tanaffus (daqiqalarda)</label>
+                    <div class="input-group">
+                        <i class="fas fa-coffee"></i>
+                        <input type="number" class="form-control" placeholder="60" value="60" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Ish kunlari</label>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;">
+                        <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                            <input type="checkbox" checked> Dushanba
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                            <input type="checkbox" checked> Seshanba
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                            <input type="checkbox" checked> Chorshanba
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                            <input type="checkbox" checked> Payshanba
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                            <input type="checkbox" checked> Juma
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                            <input type="checkbox"> Shanba
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                            <input type="checkbox"> Yakshanba
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Izoh</label>
+                    <textarea class="form-control" rows="3" placeholder="Qo'shimcha ma'lumotlar..." style="resize: vertical;"></textarea>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeShiftModal()">Bekor qilish</button>
+            <button class="btn btn-primary">
+                <i class="fas fa-save"></i>
+                Saqlash
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Page navigation
+    function showPage(page) {
+        // Hide all content areas
+        document.getElementById('dashboardContent').classList.add('hidden');
+        document.getElementById('employeesContent').classList.add('hidden');
+        document.getElementById('attendanceContent').classList.add('hidden');
+        document.getElementById('shiftsContent').classList.add('hidden');
+        document.getElementById('reportsContent').classList.add('hidden');
+
+        // Remove active class from all menu items
+        const menuItems = document.querySelectorAll('.menu-item');
+        menuItems.forEach(item => item.classList.remove('active'));
+
+        // Show selected page
+        const pageMap = {
+            'dashboard': { content: 'dashboardContent', title: 'Dashboard' },
+            'employees': { content: 'employeesContent', title: 'Xodimlar' },
+            'attendance': { content: 'attendanceContent', title: 'Davomat' },
+            'shifts': { content: 'shiftsContent', title: 'Smenalar' },
+            'reports': { content: 'reportsContent', title: 'Hisobotlar' }
+        };
+
+        if (pageMap[page]) {
+            document.getElementById(pageMap[page].content).classList.remove('hidden');
+            document.getElementById('pageTitle').textContent = pageMap[page].title;
+            event.target.closest('.menu-item').classList.add('active');
+        }
+    }
+
+    // Login/Logout functions
+    function goToDashboard() {
+        document.getElementById('loginPage').classList.add('hidden');
+        document.getElementById('dashboardPage').classList.remove('hidden');
+    }
+
+    function logout() {
+        if (confirm('Tizimdan chiqishni xohlaysizmi?')) {
+            document.getElementById('dashboardPage').classList.add('hidden');
+            document.getElementById('loginPage').classList.remove('hidden');
+        }
+    }
+
+    // Modal functions
+    function openModal() {
+        document.getElementById('employeeModal').classList.add('active');
+    }
+
+    function closeModal() {
+        document.getElementById('employeeModal').classList.remove('active');
+    }
+
+    function openShiftModal() {
+        document.getElementById('shiftModal').classList.add('active');
+    }
+
+    function closeShiftModal() {
+        document.getElementById('shiftModal').classList.remove('active');
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        const employeeModal = document.getElementById('employeeModal');
+        const shiftModal = document.getElementById('shiftModal');
+        
+        if (event.target === employeeModal) {
+            closeModal();
+        }
+        if (event.target === shiftModal) {
+            closeShiftModal();
+        }
+    }
+
+    // Simulate real-time clock
+    function updateClock() {
+        const now = new Date();
+        const timeString = now.toLocaleTimeString('uz-UZ', { 
+            hour: '2-digit', 
+            minute: '2-digit',
+            second: '2-digit'
+        });
+        const dateString = now.toLocaleDateString('uz-UZ', { 
+            weekday: 'long', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        });
+        
+        // You can add a clock element to the header if needed
+        console.log(timeString, dateString);
+    }
+
+    setInterval(updateClock, 1000);
+
+    // Add hover effects and animations
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animate stats on load
+        const statValues = document.querySelectorAll('.stat-value');
+        statValues.forEach(stat => {
+            const value = parseInt(stat.textContent);
+            let current = 0;
+            const increment = value / 50;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= value) {
+                    stat.textContent = value;
+                    clearInterval(timer);
+                } else {
+                    stat.textContent = Math.floor(current);
+                }
+            }, 20);
+        });
+
+        // Add smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Table row click handler
+        const tableRows = document.querySelectorAll('tbody tr');
+        tableRows.forEach(row => {
+            row.addEventListener('click', function(e) {
+                if (!e.target.closest('.action-buttons')) {
+                    this.style.backgroundColor = 'rgba(74, 115, 255, 0.05)';
+                    setTimeout(() => {
+                        this.style.backgroundColor = '';
+                    }, 300);
+                }
+            });
+        });
+
+        // Search functionality
+        const searchInputs = document.querySelectorAll('.search-box input');
+        searchInputs.forEach(input => {
+            input.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const table = this.closest('.table-card').querySelector('table tbody');
+                const rows = table.querySelectorAll('tr');
+                
+                rows.forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    row.style.display = text.includes(searchTerm) ? '' : 'none';
+                });
+            });
+        });
+    });
+
+    // Mobile menu toggle (for responsive design)
+    function toggleSidebar() {
+        document.querySelector('.sidebar').classList.toggle('active');
+    }
+
+    // Notification system (placeholder)
+    function showNotification(message, type = 'success') {
+        // This would show a toast notification
+        console.log(`${type}: ${message}`);
+    }
+
+    // Form validation helper
+    function validateForm(formId) {
+        const form = document.getElementById(formId);
+        const inputs = form.querySelectorAll('input[required], select[required]');
+        let isValid = true;
+
+        inputs.forEach(input => {
+            if (!input.value.trim()) {
+                input.style.borderColor = 'var(--danger)';
+                isValid = false;
+            } else {
+                input.style.borderColor = 'var(--border)';
+            }
+        });
+
+        return isValid;
+    }
+
+    // Export to Excel (placeholder)
+    function exportToExcel(tableId, filename) {
+        showNotification('Excel fayl yuklanmoqda...', 'info');
+        // Here you would implement actual Excel export functionality
+        setTimeout(() => {
+            showNotification('Excel fayl muvaffaqiyatli yuklandi!', 'success');
+        }, 1500);
+    }
+
+    // Print report (placeholder)
+    function printReport() {
+        window.print();
+    }
+
+    // Date range picker helper
+    function setDateRange(range) {
+        const endDate = new Date();
+        const startDate = new Date();
+
+        switch(range) {
+            case 'today':
+                break;
+            case 'week':
+                startDate.setDate(startDate.getDate() - 7);
+                break;
+            case 'month':
+                startDate.setMonth(startDate.getMonth() - 1);
+                break;
+            case 'year':
+                startDate.setFullYear(startDate.getFullYear() - 1);
+                break;
+        }
+
+        // Set date inputs
+        const dateInputs = document.querySelectorAll('input[type="date"]');
+        if (dateInputs.length >= 2) {
+            dateInputs[0].value = startDate.toISOString().split('T')[0];
+            dateInputs[1].value = endDate.toISOString().split('T')[0];
+        }
+    }
+
+    // Chart data (placeholder for Chart.js integration)
+    const attendanceChartData = {
+        labels: ['Dushanba', 'Seshanba', 'Chorshanba', 'Payshanba', 'Juma', 'Shanba', 'Yakshanba'],
+        datasets: [{
+            label: 'Vaqtida',
+            data: [218, 225, 220, 215, 218, 95, 42],
+            backgroundColor: 'rgba(16, 185, 129, 0.2)',
+            borderColor: 'rgba(16, 185, 129, 1)',
+            borderWidth: 2
+        }, {
+            label: 'Kechikkan',
+            data: [15, 10, 12, 18, 15, 5, 2],
+            backgroundColor: 'rgba(245, 158, 11, 0.2)',
+            borderColor: 'rgba(245, 158, 11, 1)',
+            borderWidth: 2
+        }, {
+            label: 'Kelmagan',
+            data: [12, 10, 13, 12, 12, 5, 1],
+            backgroundColor: 'rgba(239, 68, 68, 0.2)',
+            borderColor: 'rgba(239, 68, 68, 1)',
+            borderWidth: 2
+        }]
+    };
+
+    // Initialize tooltips (if using a tooltip library)
+    function initTooltips() {
+        const tooltipElements = document.querySelectorAll('[data-tooltip]');
+        tooltipElements.forEach(el => {
+            el.addEventListener('mouseenter', function() {
+                // Show tooltip
+            });
+            el.addEventListener('mouseleave', function() {
+                // Hide tooltip
+            });
+        });
+    }
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+        // Ctrl/Cmd + K for search
+        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+            e.preventDefault();
+            const searchInput = document.querySelector('.search-box input:not(.hidden)');
+            if (searchInput) searchInput.focus();
+        }
+        
+        // Escape to close modals
+        if (e.key === 'Escape') {
+            closeModal();
+            closeShiftModal();
+        }
+    });
+
+    // Auto-save form data to localStorage (optional)
+    function autoSaveForm(formId) {
+        const form = document.getElementById(formId);
+        if (!form) return;
+
+        const inputs = form.querySelectorAll('input, select, textarea');
+        inputs.forEach(input => {
+            input.addEventListener('change', function() {
+                const data = {};
+                inputs.forEach(inp => {
+                    data[inp.name || inp.id] = inp.value;
+                });
+                console.log('Form data saved:', data);
+                // localStorage.setItem(formId, JSON.stringify(data));
+            });
+        });
+    }
+
+    // Initialize everything
+    window.addEventListener('load', function() {
+        console.log('HR Attendance System initialized');
+        updateClock();
+        initTooltips();
+    });
+</script>
+
+</body>
+</html>
